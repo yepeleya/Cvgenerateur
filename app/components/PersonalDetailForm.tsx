@@ -16,6 +16,12 @@ const PersonalDetailForm: React.FC<Props> = ({ personalDetails, setPersonalDetai
         const selectedFile = event.target.files?.[0]
         if (selectedFile) {
             setFile(selectedFile)
+            // Créer une URL temporaire pour l'aperçu
+            const imageUrl = URL.createObjectURL(selectedFile);
+            setPersonalDetails({ 
+                ...personalDetails, 
+                photoUrl: imageUrl 
+            });
         }
     }
     return (
@@ -23,7 +29,7 @@ const PersonalDetailForm: React.FC<Props> = ({ personalDetails, setPersonalDetai
             <input
                 type="text"
                 placeholder="Entrer votre nom complet"
-                value={personalDetails.fullName}
+                value={personalDetails.fullName || ''}
                 onChange={(event) => handleChange(event, 'fullName')}
                 className='input input-bordered w-full'
                 id=""
@@ -32,7 +38,7 @@ const PersonalDetailForm: React.FC<Props> = ({ personalDetails, setPersonalDetai
                 <input
                     type="email"
                     placeholder="Entrer votre email"
-                    value={personalDetails.email}
+                    value={personalDetails.email || ''}
                     onChange={(event) => handleChange(event, 'email')}
                     className='input input-bordered w-full'
                     id=""
@@ -40,16 +46,16 @@ const PersonalDetailForm: React.FC<Props> = ({ personalDetails, setPersonalDetai
                 <input
                     type="tel"
                     placeholder="Entrer votre numéro de téléphone"
-                    value={personalDetails.phone}
+                    value={personalDetails.phone || ''}
                     onChange={(event) => handleChange(event, 'phone')}
                     className='input input-bordered w-full ml-4'
                     id=""
                 />
             </div>
             <input
-                type="test"
+                type="text"
                 placeholder="Entrer votre adresse de résidence"
-                value={personalDetails.address}
+                value={personalDetails.address || ''}
                 onChange={(event) => handleChange(event, 'address')}
                 className='input input-bordered w-full '
                 id=""
@@ -64,7 +70,7 @@ const PersonalDetailForm: React.FC<Props> = ({ personalDetails, setPersonalDetai
             <input
                 type="text"
                 placeholder="Entrer le poste rechercher"
-                value={personalDetails.postSeeking}
+                value={personalDetails.postSeeking || ''}
                 onChange={(event) => handleChange(event, 'postSeeking')}
                 className='input input-bordered w-full'
                 id=""
@@ -72,7 +78,7 @@ const PersonalDetailForm: React.FC<Props> = ({ personalDetails, setPersonalDetai
 
             <textarea
                 placeholder="Entrer une description de vous"
-                value={personalDetails.description}
+                value={personalDetails.description || ''}
                 onChange={(event) => handleChange(event, 'description')}
                 className='input input-bordered w-full'
                 id=""

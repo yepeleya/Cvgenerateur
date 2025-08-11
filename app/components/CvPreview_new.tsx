@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Education, Experience, Hobby, Language, PersonalDetails, Skill, CvCustomization, Country, CvTemplate } from '@/type';
+import { Education, Experience, Hobby, Language, PersonalDetails, Skill, CvCustomization } from '@/type';
 import React, { RefObject } from 'react'
 import { BriefcaseBusiness, GraduationCap, LanguagesIcon, Mail, MapPinHouse, Phone, Star } from "lucide-react";
 
@@ -11,8 +11,6 @@ type Props = {
     skills: Skill[];
     hobbies: Hobby[];
     customization: CvCustomization;
-    selectedCountry?: Country | null;
-    selectedTemplate?: CvTemplate | null;
     file?: File | null;
     download?: boolean;
     ref?: RefObject<HTMLDivElement | null>
@@ -26,8 +24,7 @@ const CvPreview: React.FC<Props> = ({
     skills, 
     hobbies, 
     customization,
-    selectedCountry,
-    selectedTemplate,
+    download,
     ref 
 }) => {
 
@@ -70,63 +67,6 @@ const CvPreview: React.FC<Props> = ({
             />
         ));
     }
-
-    // Fonction pour déterminer si la photo doit être affichée
-    const shouldShowPhoto = () => {
-        if (!selectedTemplate) return customization.showPhoto;
-        
-        const requiredFields = selectedTemplate.structure.requiredFields;
-        const optionalFields = selectedTemplate.structure.optionalFields;
-        
-        return requiredFields.includes('photo') || 
-               (optionalFields.includes('photo') && customization.showPhoto);
-    };
-
-    // Fonction pour obtenir le style spécifique au pays
-    const getCountrySpecificStyle = () => {
-        if (!selectedCountry) return {};
-        
-        switch (selectedCountry.code) {
-            case 'CI': // Côte d'Ivoire
-                return {
-                    headerStyle: 'bg-orange-600 text-white', // Couleurs du drapeau ivoirien
-                    sectionStyle: 'border-l-4 border-orange-500',
-                    photoStyle: 'border-4 border-orange-500',
-                    textStyle: 'font-medium'
-                };
-            case 'FR': // France
-                return {
-                    headerStyle: 'bg-blue-800 text-white',
-                    sectionStyle: 'border-l-4 border-blue-600',
-                    photoStyle: 'border-2 border-gray-400',
-                    textStyle: 'font-normal'
-                };
-            case 'CN': // Chine
-                return {
-                    headerStyle: 'bg-red-700 text-white',
-                    sectionStyle: 'border-l-4 border-red-500',
-                    photoStyle: 'border-2 border-red-500',
-                    textStyle: 'font-semibold'
-                };
-            case 'KR': // Corée du Sud
-                return {
-                    headerStyle: 'bg-blue-600 text-white',
-                    sectionStyle: 'border-l-4 border-blue-400',
-                    photoStyle: 'border-2 border-blue-400',
-                    textStyle: 'font-medium'
-                };
-            default:
-                return {
-                    headerStyle: 'bg-gray-700 text-white',
-                    sectionStyle: 'border-l-4 border-gray-500',
-                    photoStyle: 'border-2 border-gray-400',
-                    textStyle: 'font-normal'
-                };
-        }
-    };
-
-    const showPhoto = shouldShowPhoto();
-    const countryStyle = getCountrySpecificStyle();
 
     // Styles dynamiques basés sur le thème
     const getThemeStyles = () => {
@@ -194,23 +134,22 @@ const CvPreview: React.FC<Props> = ({
 
     return (
         <div 
-            id="cv-preview-container"
             ref={ref}
             className={`min-h-[297mm] p-8 bg-white ${themeStyles.container}`}
             style={dynamicStyles.container}
         >
-            {/* En-tête avec informations personnelles - Style spécifique au pays */}
-            <header className={`mb-8 p-6 rounded-lg ${countryStyle.headerStyle}`}>
+            {/* En-tête avec informations personnelles */}
+            <header className="mb-8">
                 <div className="flex items-start gap-6">
                     {/* Photo de profil */}
-                    {showPhoto && personalDetails.photoUrl && (
+                    {customization.showPhoto && personalDetails.photoUrl && (
                         <div className={`flex-shrink-0 ${themeStyles.borderRadius} overflow-hidden`}>
                             <Image
                                 src={personalDetails.photoUrl}
                                 alt="Photo de profil"
                                 width={120}
                                 height={120}
-                                className={`object-cover w-30 h-30 ${countryStyle.photoStyle} rounded-lg`}
+                                className="object-cover w-[120px] h-[120px]"
                             />
                         </div>
                     )}

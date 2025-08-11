@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test PDF Generation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .logs {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Test de Génération PDF - CV Générateur</h1>
+            <p>Vérifiez que le téléchargement PDF fonctionne parfaitement</p>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 Checklist de Test</h3>
+            <ul>
+                <li id="check1">✅ Application Next.js démarrée</li>
+                <li id="check2">⏳ Test de navigation vers CV-Pro</li>
+                <li id="check3">⏳ Test de création d'aperçu CV</li>
+                <li id="check4">⏳ Test de téléchargement PDF depuis CV-Pro</li>
+                <li id="check5">⏳ Test de sauvegarde CV</li>
+                <li id="check6">⏳ Test de téléchargement PDF depuis Dashboard</li>
+                <li id="check7">⏳ Test des couleurs (pas d'erreur OKLCH)</li>
+                <li id="check8">⏳ Test des images</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>🚀 Actions de Test</h3>
+            <button class="btn" onclick="testNavigation()">1. Tester Navigation</button>
+            <button class="btn" onclick="testPdfGeneration()">2. Tester Génération PDF</button>
+            <button class="btn" onclick="testColors()">3. Tester Couleurs</button>
+            <button class="btn" onclick="clearLogs()">🧹 Effacer Logs</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Résultats des Tests</h3>
+            <div id="testResults"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📝 Logs de Console</h3>
+            <div id="consoleLogs" class="logs">
+Logs apparaîtront ici...
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎯 Instructions Manuelles</h3>
+            <ol>
+                <li><strong>Ouvrez http://localhost:3000/cv-pro</strong></li>
+                <li><strong>Remplissez le formulaire</strong> avec vos informations</li>
+                <li><strong>Ajoutez une photo</strong> (facultatif)</li>
+                <li><strong>Cliquez sur "Aperçu"</strong> pour voir le CV</li>
+                <li><strong>Cliquez sur l'icône de téléchargement</strong> dans l'aperçu</li>
+                <li><strong>Vérifiez que le PDF se télécharge</strong> sans erreur</li>
+                <li><strong>Sauvegardez le CV</strong> avec "Sauvegarder"</li>
+                <li><strong>Allez sur http://localhost:3000/my-cvs</strong></li>
+                <li><strong>Cliquez sur l'icône de téléchargement</strong> d'un CV sauvé</li>
+                <li><strong>Vérifiez que le PDF se télécharge</strong> depuis le dashboard</li>
+            </ol>
+        </div>
+
+        <div class="test-section success">
+            <h3>✅ Critères de Succès</h3>
+            <ul>
+                <li>✅ Aucune erreur OKLCH dans la console</li>
+                <li>✅ PDF se télécharge correctement</li>
+                <li>✅ Images s'affichent dans le PDF</li>
+                <li>✅ Couleurs correctement appliquées</li>
+                <li>✅ Pas d'erreur "listener asynchronous"</li>
+                <li>✅ Modal de téléchargement fonctionne</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Capturer les logs de console
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        
+        function addToLogs(type, message) {
+            const logsDiv = document.getElementById('consoleLogs');
+            const timestamp = new Date().toLocaleTimeString();
+            const typeEmoji = type === 'error' ? '❌' : type === 'warn' ? '⚠️' : '🔍';
+            logsDiv.innerHTML += `[${timestamp}] ${typeEmoji} ${type.toUpperCase()}: ${message}\n`;
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addToLogs('log', args.join(' '));
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addToLogs('error', args.join(' '));
+        };
+        
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            addToLogs('warn', args.join(' '));
+        };
+        
+        function testNavigation() {
+            addTestResult('Navigation', 'En cours...', 'info');
+            window.open('http://localhost:3000/cv-pro', '_blank');
+            setTimeout(() => {
+                addTestResult('Navigation', 'Page CV-Pro ouverte. Vérifiez manuellement.', 'success');
+                updateCheckItem('check2', '✅ Test de navigation vers CV-Pro');
+            }, 1000);
+        }
+        
+        function testPdfGeneration() {
+            addTestResult('PDF Generation', 'Veuillez tester manuellement depuis l\'application', 'info');
+        }
+        
+        function testColors() {
+            addTestResult('Colors', 'Vérifiez qu\'il n\'y a pas d\'erreur OKLCH dans les logs', 'info');
+        }
+        
+        function clearLogs() {
+            document.getElementById('consoleLogs').innerHTML = 'Logs effacés...\n';
+        }
+        
+        function addTestResult(test, message, type) {
+            const resultsDiv = document.getElementById('testResults');
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : '';
+            resultsDiv.innerHTML += `<div class="test-section ${className}"><strong>${test}:</strong> ${message}</div>`;
+        }
+        
+        function updateCheckItem(id, text) {
+            document.getElementById(id).textContent = text;
+        }
+        
+        // Auto-check de démarrage
+        setTimeout(() => {
+            console.log('🚀 Test de génération PDF initialisé');
+            console.log('📋 Vérifiez les étapes manuellement dans l\'application Next.js');
+        }, 1000);
+    </script>
+</body>
+</html>

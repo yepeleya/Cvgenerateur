@@ -1,3 +1,4 @@
+"use client";
 import { Education } from '@/type';
 import { Plus } from 'lucide-react';
 import React, { useState } from 'react'
