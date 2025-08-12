@@ -1,3 +1,21 @@
+// Aperçu simple pour usage générique ou test
+export default function CvPreview({ template, personalDetails }: { template: string, personalDetails: { name: string, email: string } }) {
+    const styles = {
+        "canada": { background: "#fff", color: "#000", fontFamily: "Arial" },
+        "france": { background: "#f5f5f5", color: "#002395", fontFamily: "Times New Roman" },
+        "côte d'ivoire": { background: "#fff8e1", color: "#f77f00", fontFamily: "Verdana" },
+        default: { background: "#fff", color: "#000", fontFamily: "Arial" },
+    };
+
+    const style = styles[template] || styles.default;
+
+    return (
+        <div id="cv-preview-container" style={style}>
+            <h1>{personalDetails.name}</h1>
+            <p>{personalDetails.email}</p>
+        </div>
+    );
+}
 import Image from "next/image";
 import { Education, Experience, Hobby, Language, PersonalDetails, Skill, CvCustomization, Country, CvTemplate } from '@/type';
 import React, { RefObject } from 'react'
